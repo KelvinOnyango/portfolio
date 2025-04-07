@@ -1,9 +1,19 @@
-import React from "react";
 import "./App.css";
-import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
+import {
+  FaGithub,
+  FaLinkedin,
+  FaTwitter,
+  FaEnvelope,
+  FaMoon,
+  FaSun,
+} from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
+import { useState } from "react";
 
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("all");
+
   const projects = [
     {
       title: "E-Commerce Platform",
@@ -11,18 +21,55 @@ function App() {
         "A full-featured online store with React and Node.js backend",
       tags: ["React", "Node.js", "MongoDB"],
       link: "#",
+      category: "web",
+      healthImpact: {
+        patientsReached: 0,
+        efficiencyGain: "0%",
+      },
     },
     {
       title: "Task Management App",
       description: "Productivity application with real-time collaboration",
       tags: ["React", "Firebase", "Material UI"],
       link: "#",
+      category: "web",
+      healthImpact: {
+        patientsReached: 0,
+        efficiencyGain: "0%",
+      },
     },
     {
       title: "Weather Dashboard",
       description: "Interactive weather application with API integration",
       tags: ["JavaScript", "API", "CSS3"],
       link: "#",
+      category: "web",
+      healthImpact: {
+        patientsReached: 0,
+        efficiencyGain: "0%",
+      },
+    },
+    {
+      title: "Telemedicine Platform",
+      description: "Secure video consultations for doctors and patients",
+      tags: ["React", "WebRTC", "Node.js"],
+      link: "#",
+      category: "health",
+      healthImpact: {
+        patientsReached: "10,000+",
+        efficiencyGain: "40%",
+      },
+    },
+    {
+      title: "Patient Records System",
+      description: "HIPAA-compliant medical records management",
+      tags: ["React", "Blockchain", "AWS"],
+      link: "#",
+      category: "health",
+      healthImpact: {
+        patientsReached: "5,000+",
+        efficiencyGain: "35%",
+      },
     },
   ];
 
@@ -33,13 +80,23 @@ function App() {
     { name: "Node.js", level: 80 },
     { name: "UI/UX Design", level: 75 },
     { name: "Git", level: 85 },
+    { name: "Healthcare IT", level: 85 },
   ];
 
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const filteredProjects =
+    activeFilter === "all"
+      ? projects
+      : projects.filter((project) => project.category === activeFilter);
+
   return (
-    <div className="App">
+    <div className={`App ${darkMode ? "dark-mode" : ""}`}>
       {/* Navigation */}
       <nav className="navbar">
-        <div className="">
+        <div className="nav-container">
           <a href="#home" className="logo">
             KO
           </a>
@@ -48,6 +105,10 @@ function App() {
             <a href="#projects">Projects</a>
             <a href="#skills">Skills</a>
             <a href="#contact">Contact</a>
+            <span className="health-badge">Health Tech Focus</span>
+            <button onClick={toggleDarkMode} className="dark-mode-toggle">
+              {darkMode ? <FaSun /> : <FaMoon />}
+            </button>
           </div>
         </div>
       </nav>
@@ -61,7 +122,8 @@ function App() {
             <p className="hero-description">
               I create beautiful, functional websites and applications using
               modern technologies. Focused on React, JavaScript, and delivering
-              exceptional user experiences.
+              exceptional user experiences with a specialization in health tech
+              solutions.
             </p>
             <div className="hero-cta">
               <a href="#projects" className="btn btn-primary">
@@ -88,12 +150,51 @@ function App() {
           <h2 className="section-title">Featured Projects</h2>
           <p className="section-subtitle">Some of my recent work</p>
 
+          <div className="project-filters">
+            <button
+              className={`filter-btn ${activeFilter === "all" ? "active" : ""}`}
+              onClick={() => setActiveFilter("all")}
+            >
+              All Projects
+            </button>
+            <button
+              className={`filter-btn ${
+                activeFilter === "health" ? "active" : ""
+              }`}
+              onClick={() => setActiveFilter("health")}
+            >
+              Health Tech
+            </button>
+            <button
+              className={`filter-btn ${activeFilter === "web" ? "active" : ""}`}
+              onClick={() => setActiveFilter("web")}
+            >
+              Web Development
+            </button>
+          </div>
+
           <div className="projects-grid">
-            {projects.map((project, index) => (
+            {filteredProjects.map((project, index) => (
               <div className="project-card" key={index}>
                 <div className="project-content">
                   <h3 className="project-title">{project.title}</h3>
                   <p className="project-description">{project.description}</p>
+                  {project.category === "health" && (
+                    <div className="health-impact">
+                      <div className="impact-metric">
+                        <span className="metric-value">
+                          {project.healthImpact.patientsReached}
+                        </span>
+                        <span className="metric-label">Patients Reached</span>
+                      </div>
+                      <div className="impact-metric">
+                        <span className="metric-value">
+                          {project.healthImpact.efficiencyGain}
+                        </span>
+                        <span className="metric-label">Efficiency Gain</span>
+                      </div>
+                    </div>
+                  )}
                   <div className="project-tags">
                     {project.tags.map((tag, i) => (
                       <span key={i} className="tag">
@@ -189,11 +290,7 @@ function App() {
                 <input type="email" placeholder="Your Email" required />
               </div>
               <div className="form-group">
-                <textarea
-                  placeholder="Your Message"
-                  rows="5"
-                  required
-                ></textarea>
+                <textarea placeholder="Your Message" required></textarea>
               </div>
               <button type="submit" className="btn btn-primary">
                 Send Message
